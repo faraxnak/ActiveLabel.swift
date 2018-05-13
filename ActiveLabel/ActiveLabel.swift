@@ -48,6 +48,9 @@ typealias ElementTuple = (range: NSRange, element: ActiveElement, type: ActiveTy
     open var customColor: [ActiveType : UIColor] = [:] {
         didSet { updateTextStorage(parseText: false) }
     }
+    open var customUnderline: [ActiveType : NSUnderlineStyle] = [:] {
+        didSet { updateTextStorage(parseText: false) }
+    }
     open var customSelectedColor: [ActiveType : UIColor] = [:] {
         didSet { updateTextStorage(parseText: false) }
     }
@@ -321,6 +324,13 @@ typealias ElementTuple = (range: NSRange, element: ActiveElement, type: ActiveTy
             case .custom: attributes[NSAttributedStringKey.foregroundColor] = customColor[type] ?? defaultCustomColor
             }
             
+            switch type {
+            case .custom: attributes[NSAttributedStringKey.underlineStyle] =
+                customUnderline[type]?.rawValue ?? NSUnderlineStyle.styleNone.rawValue
+            default:
+                break
+            }
+            
             if let highlightFont = hightlightFont {
                 attributes[NSAttributedStringKey.font] = highlightFont
             }
@@ -412,6 +422,13 @@ typealias ElementTuple = (range: NSRange, element: ActiveElement, type: ActiveTy
             case .custom: unselectedColor = customColor[selectedElement.type] ?? defaultCustomColor
             }
             attributes[NSAttributedStringKey.foregroundColor] = unselectedColor
+        }
+        
+        switch type {
+        case .custom: attributes[NSAttributedStringKey.underlineStyle] =
+            customUnderline[type]?.rawValue ?? NSUnderlineStyle.styleNone.rawValue
+        default:
+            break
         }
         
         if let highlightFont = hightlightFont {
